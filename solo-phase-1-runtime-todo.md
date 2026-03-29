@@ -1,5 +1,18 @@
 # Solo Phase 1 Runtime TODO
 
+## Metadata
+
+| Field | Value |
+| --- | --- |
+| Language | `zh-CN` |
+| Type | `implementation-plan` |
+| Status | `active` |
+| Summary | 给 Solo 从 `messages + proposals` 迁移到 `thread / turn / item` 运行时结构提供一条最小可实现路径。 |
+| Topics | `Solo`, `agent runtime`, `migration`, `approval` |
+| Keywords | `turn`, `item`, `approval state`, `migration`, `projection`, `runtime` |
+| Related | [solo-runtime-boundary.md](./solo-runtime-boundary.md), [openai-codex-harness-solo-notes.md](./openai-codex-harness-solo-notes.md) |
+| Last Updated | `2026-03-29` |
+
 ## 目标
 
 Phase 1 不重做 UI，不替换 `codex_cli`，只做一件事：

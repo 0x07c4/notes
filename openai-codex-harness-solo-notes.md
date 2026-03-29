@@ -1,5 +1,18 @@
 # OpenAI Codex Harness 与 Solo 笔记
 
+## Metadata
+
+| Field | Value |
+| --- | --- |
+| Language | `zh-CN` |
+| Type | `research-note` |
+| Status | `active` |
+| Summary | 从 OpenAI 对 Codex harness 和 App Server 的描述里，提炼出对 Solo 有用的 runtime、事件流和审批结构判断。 |
+| Topics | `Codex`, `agent runtime`, `Solo`, `app server` |
+| Keywords | `Codex`, `harness`, `App Server`, `thread`, `turn`, `item`, `approval`, `event stream` |
+| Related | [solo-runtime-boundary.md](./solo-runtime-boundary.md), [solo-phase-1-runtime-todo.md](./solo-phase-1-runtime-todo.md), [agent-interaction-formalism.md](./agent-interaction-formalism.md) |
+| Last Updated | `2026-03-29` |
+
 ## 一句话判断
 
 - OpenAI 真正在做的，不是“再包一层聊天 UI”，而是把 agent runtime 做成一个可复用的 `App Server`。

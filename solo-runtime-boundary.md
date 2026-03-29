@@ -1,5 +1,18 @@
 # Solo Runtime Boundary
 
+## Metadata
+
+| Field | Value |
+| --- | --- |
+| Language | `zh-CN` |
+| Type | `boundary-note` |
+| Status | `active` |
+| Summary | 说明 Solo 应该自己掌握哪些 runtime 语义，哪些部分只该作为 provider 接入层或 projection 细节存在。 |
+| Topics | `Solo`, `runtime boundary`, `provider adapter`, `projection` |
+| Keywords | `runtime boundary`, `adapter`, `provider`, `projection`, `codex_cli`, `approval` |
+| Related | [solo-phase-1-runtime-todo.md](./solo-phase-1-runtime-todo.md), [openai-codex-harness-solo-notes.md](./openai-codex-harness-solo-notes.md) |
+| Last Updated | `2026-03-29` |
+
 ## 一句话结论
 
 - `codex_cli` 可以继续当 access layer

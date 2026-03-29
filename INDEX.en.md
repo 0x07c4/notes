@@ -1,5 +1,18 @@
 # Index
 
+## Metadata
+
+| Field | Value |
+| --- | --- |
+| Language | `en` |
+| Type | `index` |
+| Status | `active` |
+| Summary | The current topic map and retrieval entry for finding ideas in this repository by theme, file, and keywords. |
+| Topics | `index`, `retrieval`, `knowledge entry` |
+| Keywords | `index`, `topics`, `retrieval`, `map`, `keywords` |
+| Related | [README.en.md](./README.en.md), [INDEX.md](./INDEX.md) |
+| Last Updated | `2026-03-29` |
+
 [Back to README](./README.en.md) | [中文索引](./INDEX.md)
 
 > The current topic map and retrieval entry for this repository.

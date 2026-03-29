@@ -68,6 +68,7 @@ To make later retrieval more stable, this repository should try to preserve:
 - one clear theme per file where possible
 - filenames that directly reflect the topic
 - titles that state the judgment or question clearly
+- a consistent `Metadata` header near the top of notes
 - explicit links across important notes
 - root-level index files as stable entry points
 

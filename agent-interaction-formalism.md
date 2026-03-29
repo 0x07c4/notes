@@ -1,5 +1,18 @@
 # Agent 交互约束的形式化方法
 
+## Metadata
+
+| Field | Value |
+| --- | --- |
+| Language | `zh-CN` |
+| Type | `architecture-note` |
+| Status | `evergreen` |
+| Summary | 讨论如何用协议、能力边界和不变量约束 `agent` 交互，并界定自然语言在系统里的正确位置。 |
+| Topics | `formalism`, `AI engineering`, `agent runtime` |
+| Keywords | `protocol`, `capability`, `invariant`, `state machine`, `natural language`, `Dijkstra`, `Brooks` |
+| Related | [openai-codex-harness-solo-notes.md](./openai-codex-harness-solo-notes.md), [solo-runtime-boundary.md](./solo-runtime-boundary.md) |
+| Last Updated | `2026-03-29` |
+
 ## 一句话判断
 
 - 适合软件架构的，不是一个万能图形符号，而是一套可执行协议。

@@ -1,5 +1,18 @@
 # Index
 
+## Metadata
+
+| Field | Value |
+| --- | --- |
+| Language | `zh-CN` |
+| Type | `index` |
+| Status | `active` |
+| Summary | 当前仓库的主题地图与检索入口，用来按主题、文件和关键词定位个人思考。 |
+| Topics | `index`, `retrieval`, `knowledge entry` |
+| Keywords | `index`, `topics`, `retrieval`, `map`, `keywords` |
+| Related | [README.md](./README.md), [INDEX.en.md](./INDEX.en.md) |
+| Last Updated | `2026-03-29` |
+
 [返回首页](./README.md) | [English Index](./INDEX.en.md)
 
 > 当前仓库的主题地图与检索入口。
