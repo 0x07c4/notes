@@ -1,38 +1,40 @@
 # Notes
 
-[简体中文](./README.md) | [English](./README.en.md)
+<p align="center">
+  <a href="./README.md">简体中文</a> · <a href="./README.en.md">English</a>
+</p>
 
-> 一个长期生长的思考仓库，用来保存值得反复回看的判断、问题和结构。
+<p align="center">
+  <img alt="Language" src="https://img.shields.io/badge/language-Simplified%20Chinese%20%2F%20English-111827?style=flat-square">
+  <img alt="Type" src="https://img.shields.io/badge/type-long--running%20notebook-0f766e?style=flat-square">
+  <img alt="Focus" src="https://img.shields.io/badge/focus-architecture%20%7C%20AI%20engineering%20%7C%20Solo-7c3aed?style=flat-square">
+</p>
 
-## 介绍
+<p align="center">
+  一个长期生长的思考仓库，用来保存值得反复回看的判断、问题和结构。
+</p>
+
+## 仓库画像
 
 这个仓库不是某个单一主题的资料夹，也不是一次性项目文档。
 
-它更像一个长期笔记本：
+它更像一个会持续生长的 notebook：
 
 - 记录思考
 - 沉淀判断
 - 收纳结构化问题
 - 保留以后还会回来看的东西
 
-这里会有 AI engineering、agent runtime、软件架构、产品边界、`Solo` 相关内容。  
-以后也会有别的主题。
-
 重点不是“现在有哪些文章”，而是把未来持续产生的思考，放进一个能积累、能回看、能继续展开的地方。
 
-## 这个仓库在做什么
+| 维度 | 说明 |
+| --- | --- |
+| 定位 | 长期思考仓库 |
+| 形态 | 笔记、研究记录、架构判断、概念模型 |
+| 当前焦点 | AI engineering、agent runtime、formalism、`Solo` |
+| 长期范围 | 不设主题上限，只保留值得回看的内容 |
 
-它不是当前文件列表的快照。
-
-它更像一个会持续生长的思考仓库，用来存放：
-
-- 架构笔记
-- 产品判断
-- 工程研究
-- runtime 和 protocol 想法
-- 设计约束
-- 概念模型
-- 其他值得保留和回看的内容
+## 当前主题
 
 当前内容刚好比较集中在四条线上：
 
@@ -43,65 +45,31 @@
 | Formalism | 如何用协议、能力边界和不变量约束 `agent` |
 | Solo | 面向 human-in-the-loop 的 AI 工作台相关判断 |
 
-## 当前入口
+这些只是当前聚类，不是这个仓库未来的边界。
 
-如果你想快速进入这个仓库当前的内容，建议从这里开始：
+## 从哪里开始
 
-1. `agent-interaction-formalism.md`
-   看 `state machine + bounded effects + invariants` 这条线
-2. `solo-runtime-boundary.md`
-   看 Solo 自己的 runtime 和 provider adapter 的边界
-3. `solo-phase-1-runtime-todo.md`
-   看如何从 chat-shaped state 迁移到 runtime-shaped state
-4. `openai-codex-harness-solo-notes.md`
-   看 Codex App Server 方向和 Solo 架构的连接点
+如果你想快速进入这个仓库现在的内容，建议从这里开始：
 
-## 当前笔记
+1. [agent-interaction-formalism.md](./agent-interaction-formalism.md)
+   `state machine + bounded effects + invariants`
+2. [solo-runtime-boundary.md](./solo-runtime-boundary.md)
+   Solo 自己的 runtime 和 provider adapter 的边界
+3. [solo-phase-1-runtime-todo.md](./solo-phase-1-runtime-todo.md)
+   从 chat-shaped state 迁移到 runtime-shaped state 的最小路径
+4. [openai-codex-harness-solo-notes.md](./openai-codex-harness-solo-notes.md)
+   Codex App Server 方向和 Solo 架构的连接点
 
-### `agent-interaction-formalism.md`
+## 当前入口文件
 
-讨论为什么软件架构应该用可执行协议约束 agent，而不是依赖自由文本提示。
+| 文件 | 作用 |
+| --- | --- |
+| [agent-interaction-formalism.md](./agent-interaction-formalism.md) | 用协议、能力和不变量约束 `agent` 交互 |
+| [solo-runtime-boundary.md](./solo-runtime-boundary.md) | 划清 Solo runtime 和 provider 适配层的边界 |
+| [solo-phase-1-runtime-todo.md](./solo-phase-1-runtime-todo.md) | 给运行时改造提供一条最小实现路线 |
+| [openai-codex-harness-solo-notes.md](./openai-codex-harness-solo-notes.md) | 把 Codex 的 runtime 结构抽成对 Solo 有用的判断 |
 
-涉及：
-
-- `protocol + capability + invariant`
-- 为什么自然语言应该停在 `intent layer`
-- 为什么 `LLM` 不是银弹，而更像 `accidental-complexity compressor`
-
-### `solo-runtime-boundary.md`
-
-一篇短的边界文档，讨论 Solo 应该自己拥有哪部分 runtime 语义，哪部分只该是 adapter 关心的事。
-
-涉及：
-
-- 为什么 `codex_cli` 可以是 access layer，但不该是 Solo 的长期 runtime
-- 为什么 UI 应该读 Solo projection，而不是 provider 原生状态
-
-### `solo-phase-1-runtime-todo.md`
-
-一份具体实现计划，目标是在不提前重写产品表层的前提下，引入最小可用 runtime 模型。
-
-涉及：
-
-- `TurnRecord`
-- `TurnItem`
-- item 级审批状态
-- dual-write 迁移策略
-
-### `openai-codex-harness-solo-notes.md`
-
-围绕 OpenAI Codex 写作和实现方向整理的笔记，重点是 runtime 结构，而不是 UI 模仿。
-
-涉及：
-
-- `Thread -> Turn -> Item`
-- event streams
-- approval as protocol
-- live runtime state 和 persisted history 的分层
-
-这些只是当前入口，不是这个仓库未来的边界。
-
-## 写作风格
+## 写作方式
 
 这些笔记会尽量保持：
 
