@@ -508,6 +508,235 @@ always command -> policy_checked
 - 一组能承载事务边界的对象
 - 一组能定义提交顺序的协议
 
+## 最小可执行语义应该怎么定义
+
+如果再往下一步，不是继续扩语法，而是把这套东西压成最小语义内核。
+
+我建议最小只定义 4 类值和 3 个核心判定。
+
+### 4 类值
+
+#### 1. `Role`
+
+```txt
+Role ::= User | Agent | Runtime | Workspace
+```
+
+它回答：
+
+- 谁在发起动作
+
+#### 2. `State`
+
+```txt
+State ::= Idle | Planning | Previewing | WaitingApproval | Applying | Completed | Failed
+```
+
+它回答：
+
+- 系统当前处于哪个可观察阶段
+
+#### 3. `Action`
+
+```txt
+Action ::= Request
+         | Propose
+         | RequestChange
+         | Approve
+         | Reject
+         | Prepare
+         | Apply
+         | Succeed
+         | Fail
+```
+
+它回答：
+
+- 发生了什么协议动作
+
+#### 4. `Effect`
+
+```txt
+Effect ::= Read(path)
+         | Write(diff)
+         | Exec(cmd)
+         | Network(req)
+```
+
+它回答：
+
+- 产生了什么副作用
+
+### 3 个核心判定
+
+#### 1. `transition`
+
+```txt
+transition : State × Action -> State
+```
+
+它定义：
+
+- 当前状态在一个动作之后会变成什么状态
+
+例如：
+
+```txt
+transition(Idle, Request)              = Planning
+transition(Planning, Propose)          = Previewing
+transition(Previewing, RequestChange)  = Planning
+transition(Previewing, Approve)        = WaitingApproval
+transition(Previewing, Reject)         = Completed
+transition(WaitingApproval, Prepare)   = Applying
+transition(Applying, Succeed)          = Completed
+transition(Applying, Fail)             = Failed
+```
+
+如果某个组合没有定义，就说明：
+
+- 这个动作在当前状态下非法
+
+这点很重要，因为它意味着合法性不是靠 prompt 猜，而是靠语义本身定义。
+
+#### 2. `can`
+
+```txt
+can : Role × Effect × State × Context -> Bool
+```
+
+它定义：
+
+- 某个角色在给定状态和上下文里，是否有权触发某个副作用
+
+例如：
+
+```txt
+can(Agent, Read(path), state, ctx) =
+  path in ctx.workspace_scope
+
+can(Runtime, Write(diff), state, ctx) =
+  state == WaitingApproval and ctx.approval_resolved_accept
+
+can(Runtime, Exec(cmd), state, ctx) =
+  state == WaitingApproval and policy_allows(cmd, ctx.policy)
+```
+
+这一步决定的不是“系统下一步怎么流”，而是：
+
+- 什么能真正落地
+
+也就是：
+
+- protocol 管顺序
+- capability 管副作用
+
+#### 3. `invariant`
+
+```txt
+invariant : Trace -> Bool
+```
+
+它定义：
+
+- 一段执行轨迹是否始终满足系统底线
+
+例如：
+
+```txt
+always apply -> approval_resolved_accept
+always write -> within_scope
+always exec  -> policy_checked
+always completed_apply -> preview_existed_before
+```
+
+这一步解决的是：
+
+- 即使每一步局部看起来都“差不多对”，整段执行有没有越界
+
+### 这 3 个判定为什么够最小
+
+因为 agent runtime 最终只需要回答 3 个问题：
+
+1. 现在这一步是不是合法状态转移
+2. 现在这个副作用有没有权限发生
+3. 到目前为止有没有破坏系统底线
+
+刚好对应：
+
+- `transition`
+- `can`
+- `invariant`
+
+其他东西其实都可以挂在这上面。
+
+比如：
+
+- UI button gating
+  - 来自 `transition + can`
+- approval 流
+  - 来自 `transition + invariant`
+- audit
+  - 来自 `Trace`
+- eval
+  - 来自 `Trace + invariant`
+
+### 最小 Context 应该包含什么
+
+为了让 `can` 和 `invariant` 真能工作，最小上下文至少要有：
+
+```txt
+Context ::= {
+  workspace_scope,
+  approval_resolved_accept,
+  policy,
+  existing_preview,
+  trace
+}
+```
+
+这一步也能看出一个关键点：
+
+- 语义内核不需要一上来就有复杂对象图
+- 它只需要最小足够的上下文来做判定
+
+### 最小 Trace 长什么样
+
+```txt
+Trace ::= Event*
+
+Event ::= {
+  role,
+  action,
+  from_state,
+  to_state,
+  effects
+}
+```
+
+有了这个，系统才有正式的：
+
+- replay
+- audit
+- eval
+
+否则历史只是文本堆积。
+
+### 一句压缩
+
+如果把最小可执行语义压成一句话，它就是：
+
+- `transition` 决定下一步是否合法
+- `can` 决定副作用能否落地
+- `invariant` 决定整段行为是否越界
+
+也就是说：
+
+- `model` 负责给系统命名
+- `protocol` 负责给系统排序
+- `semantics` 负责给系统判定
+
+这一步一旦定住，后面的 DSL 语法基本就只是表面形式问题。
+
 ## 和常见形式化方法的关系
 
 ### 和 UML 的关系
