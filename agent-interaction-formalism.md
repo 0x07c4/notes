@@ -519,6 +519,154 @@ Brooks 的核心区分到今天仍然非常有用：
 
 - `agent runtime` 是 AI system 的 transaction layer
 
+### 为什么 `transaction layer` 这个类比特别关键
+
+因为它直接指出了 runtime 的责任不是“让 agent 更聪明”，而是：
+
+- 把意图变成受控执行
+
+它至少对应 6 个非常具体的工程含义。
+
+#### 1. 从意图到副作用，中间必须有一个可管理边界
+
+用户说一句话，不应该直接变成：
+
+- 文件写入
+- 命令执行
+- 外部请求
+
+中间必须经过一层 runtime，把它收成：
+
+- 一轮任务
+- 一组候选动作
+- 一组待确认副作用
+
+这就像 transaction 不会让应用语句直接裸写底层存储一样。
+
+#### 2. “提交” 不是生成文本，而是副作用落地
+
+对聊天系统来说，assistant 回复结束就算完成。
+
+但对 agent system 来说，真正关键的是：
+
+- 有没有进入可执行状态
+- 有没有被用户批准
+- 有没有真正落地
+
+所以 agent runtime 里的真正 commit 点，通常不是：
+
+- message completed
+
+而是：
+
+- diff applied
+- command executed
+- approval resolved
+
+这就是 transaction 视角和聊天视角最本质的区别。
+
+#### 3. 需要明确的阶段，而不是一团连续文本
+
+transaction 之所以有意义，是因为它会区分：
+
+- 开始
+- 处理中
+- 提交
+- 回滚
+
+agent runtime 也一样，至少要能区分：
+
+- drafted
+- previewed
+- approved
+- applied
+- failed
+- rolled back
+
+如果系统只有一条不断增长的自然语言流，它就没有 transaction semantics。
+
+#### 4. 回滚和恢复必须是协议能力，不是事后补救
+
+一旦 agent 会改文件、执行命令，失败就不是“答错一句话”那么简单。
+
+它可能已经留下：
+
+- 半完成文件
+- 中途执行的命令
+- 被部分消费的上下文
+
+所以恢复、重放、分叉、回滚必须在 runtime 里有正式位置。
+
+这和 transaction 系统需要：
+
+- redo
+- rollback
+- recovery
+
+是同一个方向。
+
+#### 5. 审批本质上就是 commit protocol
+
+很多系统把审批做成一个 UI 弹窗。
+
+但如果从 transaction 看，它其实更接近：
+
+- prepare
+- approve / reject
+- commit / abort
+
+也就是说，审批不是附属体验，而是 runtime commit protocol 的一部分。
+
+这也是为什么我一直说：
+
+- approval 必须属于协议，而不是 provider 顺手给的附加功能
+
+#### 6. 审计和 eval 依赖结构化日志
+
+transaction layer 的另一个核心价值是：
+
+- 你事后能知道到底发生了什么
+
+对 agent system 来说，就是要能回答：
+
+- 哪个 turn 触发了哪次写入
+- 哪个 approval 允许了哪次执行
+- 哪个 item 失败了
+- 哪个 diff 最终进入工作区
+
+如果这套轨迹不结构化，后面的 eval、review、debug 基本都不稳。
+
+### 但这个类比也不能滥用
+
+它不是说 agent runtime 必须完全长成数据库事务系统。
+
+两者还是有差别：
+
+- 很多副作用不可逆
+- 有些工具调用无法真正回滚
+- 计划和执行之间可能穿插用户插话
+- transaction 边界可能是长时段、多步骤的
+
+所以更准确的说法不是：
+
+- `agent runtime = database transaction manager`
+
+而是：
+
+- `agent runtime` 负责给高不确定性的 agent 行为，提供 transaction-like control
+
+也就是：
+
+- 明确边界
+- 明确阶段
+- 明确提交点
+- 明确失败点
+- 明确恢复路径
+
+一句话说：
+
+- 没有这层 transaction-like runtime，agent 就只是会动手的文本生成器
+
 ## 为什么大多数“Agent”还没到 Runtime 这一层
 
 现在很多所谓 agent，其实更接近：
