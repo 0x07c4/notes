@@ -11,7 +11,7 @@
 | Topics | `DSL`, `formalism`, `agent runtime`, `architecture` |
 | Keywords | `DSL`, `protocol`, `state machine`, `capability`, `invariant`, `projection`, `approval` |
 | Related | [agent-interaction-formalism.md](./agent-interaction-formalism.md), [solo-runtime-boundary.md](./solo-runtime-boundary.md), [solo-phase-1-runtime-todo.md](./solo-phase-1-runtime-todo.md) |
-| Last Updated | `2026-03-29` |
+| Last Updated | `2026-03-30` |
 
 ## 一句话判断
 
@@ -301,6 +301,212 @@ protocol SoloWorkspaceTurn {
 - 人不是“外部打断者”
 - 人是协议参与方
 - approval 是 commit protocol 的一部分
+
+## 最小 `Model + Protocol` 应该怎么定义
+
+如果现在就要开始做，不要先追求完整 DSL。
+
+更现实的顺序是：
+
+1. 先定最小 `model`
+2. 再定最小 `protocol`
+3. 最后再决定 notation 怎么写
+
+因为 notation 可以改，model 一旦错了，后面全会漂。
+
+### 最小 `model`
+
+我建议最小只保留 5 个核心对象。
+
+#### 1. `Role`
+
+表示谁在参与协议。
+
+最小集合：
+
+```txt
+Role ::= User | Agent | Runtime | Workspace
+```
+
+`Tool` 和 `Provider` 先不要急着做成一等对象，可以先作为 Runtime 下面的 effect target。
+
+#### 2. `Thread`
+
+表示一条可恢复、可分叉、可回放的长期工作链。
+
+最小定义：
+
+```txt
+Thread ::= Turn*
+```
+
+没有 `Thread`，你就没有：
+
+- resume
+- fork
+- replay
+- 长期历史
+
+#### 3. `Turn`
+
+表示一次明确的事务边界。
+
+最小定义：
+
+```txt
+Turn ::= {
+  input,
+  items,
+  state
+}
+```
+
+这里最关键的不是字段多少，而是：
+
+- 系统终于有了“一轮”的真对象
+
+没有 `Turn`，你就只能在 message 流里猜“这一轮到底是什么”。
+
+#### 4. `Item`
+
+表示 turn 里的原子工作单元。
+
+最小种类：
+
+```txt
+Item ::= Message | Plan | Preview | Approval | Command | FileChange
+```
+
+为什么必须有 `Item`：
+
+- 不然 message、proposal、command、diff 就会分散成多套平行历史
+- runtime 没法统一审计和投影
+
+#### 5. `Approval`
+
+表示一条显式的提交决议。
+
+最小定义：
+
+```txt
+Approval ::= {
+  target_item,
+  resolution
+}
+```
+
+其中：
+
+```txt
+Resolution ::= Pending | Accept | Reject
+```
+
+为什么它必须单独存在：
+
+- 因为 approval 不是 UI 小部件
+- 它是 commit protocol 的一部分
+
+### 为什么这 5 个是最小集合
+
+这 5 个对象刚好对应 5 件系统级问题：
+
+| 对象 | 解决的问题 |
+| --- | --- |
+| `Role` | 谁在参与、谁对谁负责 |
+| `Thread` | 历史如何连续存在 |
+| `Turn` | 一次交互的边界是什么 |
+| `Item` | 这一轮里到底发生了哪些原子动作 |
+| `Approval` | 哪些动作真正被允许提交 |
+
+如果再往下砍，系统会马上退化。
+
+比如：
+
+- 没有 `Turn`，就会退回聊天流
+- 没有 `Item`，就会退回 message + sidecar proposal
+- 没有 `Approval`，就会退回 UI 弹窗
+
+### 最小 `protocol`
+
+有了这 5 个对象以后，最小协议其实可以压得很短。
+
+#### Turn State
+
+```txt
+TurnState ::= Idle | Planning | Previewing | WaitingApproval | Applying | Completed | Failed
+```
+
+#### Transition
+
+```txt
+Idle            --user.request-->        Planning
+Planning        --agent.propose-->       Previewing
+Previewing      --user.request_change--> Planning
+Previewing      --user.approve-->        WaitingApproval
+Previewing      --user.reject-->         Completed
+WaitingApproval --runtime.prepare-->     Applying
+Applying        --runtime.success-->     Completed
+Applying        --runtime.failure-->     Failed
+```
+
+这里最关键的不是名字，而是顺序关系：
+
+- 先有 propose / preview
+- 再有 approval
+- 最后才有 apply
+
+也就是：
+
+- preview-before-commit
+
+#### Minimal Capability Rules
+
+```txt
+Agent.read(path)      when path in workspace.scope
+Agent.propose(change) when turn.state in {Planning, Previewing}
+Runtime.apply(diff)   when turn.state == WaitingApproval
+Runtime.exec(cmd)     when turn.state == WaitingApproval and policy.allows(cmd)
+```
+
+这一步保证：
+
+- 生成可以先发生
+- 落地必须后发生
+
+#### Minimal Invariants
+
+```txt
+always apply -> approval_resolved_accept
+always apply -> preview_exists
+always write -> within_scope
+always command -> policy_checked
+```
+
+这一步保证：
+
+- 不会偷提交
+- 不会越权执行
+
+### 为什么我说要先定 `model + protocol`
+
+因为一旦这两层定下来：
+
+- notation 只是写法问题
+- schema 只是字段展开问题
+- runtime 只是执行器问题
+- UI 只是 projection 问题
+
+反过来，如果这两层没定：
+
+- 你写再漂亮的 DSL 也只是语法糖
+- 你做再完整的 UI 也只是在猜状态
+
+## 一句收束
+
+对 agent architecture 来说，真正的起点不是 DSL syntax，而是：
+
+- 一组能承载事务边界的对象
+- 一组能定义提交顺序的协议
 
 ## 和常见形式化方法的关系
 
