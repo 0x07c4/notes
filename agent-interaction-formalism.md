@@ -667,6 +667,144 @@ transaction layer 的另一个核心价值是：
 
 - 没有这层 transaction-like runtime，agent 就只是会动手的文本生成器
 
+## 为什么 Human-in-the-Loop 产品天然更适合长在这种 Runtime 上
+
+很多人会把 human-in-the-loop 理解成：
+
+- agent 不够强，所以先让人来补
+
+我觉得这理解偏了。
+
+更准确的说法是：
+
+- human-in-the-loop 不是对 agent 的临时妥协
+- 它本来就是 transaction-like runtime 最自然的产品表达
+
+因为一旦系统存在：
+
+- prepare
+- preview
+- approval
+- commit
+- rollback
+
+人就不是“外部打断者”，而是协议里的正式参与方。
+
+### 为什么它天然匹配
+
+#### 1. 很多关键动作本来就不该自动提交
+
+在真实工作里，最贵的动作往往是：
+
+- 改核心代码
+- 执行高风险命令
+- 覆盖已有文件
+- 触发外部系统副作用
+
+这些动作不是因为模型暂时不够聪明才需要确认。
+
+而是因为：
+
+- 责任边界本来就需要显式 commit
+
+换句话说，human approval 不是补丁，而是事务边界的一部分。
+
+#### 2. 人类最擅长做的，本来就不是逐 token 生成
+
+人类最有价值的位置通常是：
+
+- 定方向
+- 选方案
+- 判断风险
+- 决定是否提交
+
+这刚好对应 runtime 里最关键的那些点：
+
+- steer
+- preview
+- approve / reject
+- rollback / fork
+
+所以 human-in-the-loop 不是把人塞回细节劳动，而是把人放在最该负责的控制点上。
+
+#### 3. 产品也会因此更稳
+
+如果系统默认追求自治，产品会天然倾向于：
+
+- 尽快跳过确认
+- 尽快自动提交
+- 把失败解释成模型“偶尔犯错”
+
+但如果系统从一开始就按 human-in-the-loop 建：
+
+- preview 会成为第一等对象
+- approval 会成为协议能力
+- diff / command / plan 会被显式渲染
+- 用户可以在关键点插手，而不是事后补锅
+
+这会让产品从“智能演示”更早走向“可信协作”。
+
+#### 4. 这更符合软件工程里的责任结构
+
+软件系统不是单机闭环推理题。
+
+它牵涉：
+
+- 意图
+- 风险
+- 代码所有权
+- 环境状态
+- 外部依赖
+- 组织责任
+
+这些东西天然要求：
+
+- 有人负责批准
+- 有地方记录批准
+- 有办法解释批准后的后果
+
+所以从工程治理看，human-in-the-loop 不是保守，而是更真实。
+
+### 这也解释了为什么很多“自治 agent 产品”会别扭
+
+它们的问题不一定是模型不行。
+
+更常见的是产品语义本身在反 transaction：
+
+- 没有稳定 preview
+- 没有清晰 commit point
+- 没有显式 approval protocol
+- 没有结构化 rollback / replay
+
+于是系统只能靠：
+
+- 模型自觉
+- prompt 约束
+- UI 临时弹窗
+
+去补一个本来该由 runtime 提供的东西。
+
+最后体验就会很怪：
+
+- 看起来很自动
+- 但不可信
+- 看起来很聪明
+- 但不敢放手
+
+### 所以更准确的产品判断是
+
+不是：
+
+- human-in-the-loop 限制了 agent
+
+而是：
+
+- human-in-the-loop 给 agent runtime 提供了正确的提交语义
+
+一句话说：
+
+- 在高价值工作流里，human-in-the-loop 不是 fallback，而是 commit architecture
+
 ## 为什么大多数“Agent”还没到 Runtime 这一层
 
 现在很多所谓 agent，其实更接近：
