@@ -73,6 +73,7 @@
 - 笔记头部尽量保持统一 `Metadata` 结构
 - 重要文件之间保持显式链接
 - 索引文件优先放在仓库根目录
+- 新笔记优先从 [NOTE_TEMPLATE.md](./NOTE_TEMPLATE.md) 开始
 
 ## 当前主题
 
@@ -107,6 +108,7 @@
 | 文件 | 作用 | 关键词 |
 | --- | --- |
 | [INDEX.md](./INDEX.md) | 当前知识图谱和主题入口 | index, map, topics, retrieval |
+| [NOTE_TEMPLATE.md](./NOTE_TEMPLATE.md) | 新笔记的统一起点模板 | template, metadata, structure |
 | [agent-interaction-formalism.md](./agent-interaction-formalism.md) | 用协议、能力和不变量约束 `agent` 交互 | protocol, capability, invariant, formalism |
 | [solo-runtime-boundary.md](./solo-runtime-boundary.md) | 划清 Solo runtime 和 provider 适配层的边界 | runtime boundary, adapter, projection |
 | [solo-phase-1-runtime-todo.md](./solo-phase-1-runtime-todo.md) | 给运行时改造提供一条最小实现路线 | turn, item, approval, migration |

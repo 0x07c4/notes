@@ -135,3 +135,4 @@ If this repository keeps evolving into a retrievable personal thinking base, fut
 - timely index updates when new themes appear
 - explicit cross-links between important notes
 - files that still stand on their own when read in isolation
+- new notes should start from [NOTE_TEMPLATE.en.md](./NOTE_TEMPLATE.en.md)

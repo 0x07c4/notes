@@ -71,6 +71,7 @@ To make later retrieval more stable, this repository should try to preserve:
 - a consistent `Metadata` header near the top of notes
 - explicit links across important notes
 - root-level index files as stable entry points
+- new notes should start from [NOTE_TEMPLATE.en.md](./NOTE_TEMPLATE.en.md)
 
 ## Current Themes
 
@@ -105,6 +106,7 @@ If you want the fastest path into the repository as it exists today, start here:
 | File | Why it matters | Keywords |
 | --- | --- |
 | [INDEX.en.md](./INDEX.en.md) | The current knowledge map and topic entry layer | index, map, topics, retrieval |
+| [NOTE_TEMPLATE.en.md](./NOTE_TEMPLATE.en.md) | The standard starting template for new notes | template, metadata, structure |
 | [agent-interaction-formalism.md](./agent-interaction-formalism.md) | Constraining `agent` interaction with protocol, capabilities, and invariants | protocol, capability, invariant, formalism |
 | [solo-runtime-boundary.md](./solo-runtime-boundary.md) | Separating Solo runtime semantics from provider integration concerns | runtime boundary, adapter, projection |
 | [solo-phase-1-runtime-todo.md](./solo-phase-1-runtime-todo.md) | A minimal implementation path for runtime refactoring | turn, item, approval, migration |
