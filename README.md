@@ -1,10 +1,10 @@
 # Notes
 
-> A long-running notebook for ideas worth keeping.
+[简体中文](./README.md) | [English](./README.en.md)
 
 > 一个长期生长的思考仓库，用来保存值得反复回看的判断、问题和结构。
 
-## 中文介绍
+## 介绍
 
 这个仓库不是某个单一主题的资料夹，也不是一次性项目文档。
 
@@ -20,107 +20,100 @@
 
 重点不是“现在有哪些文章”，而是把未来持续产生的思考，放进一个能积累、能回看、能继续展开的地方。
 
-This repository is the home for ongoing thinking.
+## 这个仓库在做什么
 
-Some notes will be about AI engineering, agent runtimes, software architecture, and `Solo`.  
-Some will be about other things entirely.
+它不是当前文件列表的快照。
 
-The point of this repo is not to freeze a topic.  
-The point is to keep thoughts that are still useful after the conversation is over.
+它更像一个会持续生长的思考仓库，用来存放：
 
-## What This Repo Is About
+- 架构笔记
+- 产品判断
+- 工程研究
+- runtime 和 protocol 想法
+- 设计约束
+- 概念模型
+- 其他值得保留和回看的内容
 
-This is not just a snapshot of the current files.
+当前内容刚好比较集中在四条线上：
 
-It is intended to become a durable thinking repository:
-
-- architecture notes
-- product judgments
-- engineering research
-- runtime and protocol ideas
-- design constraints
-- conceptual models
-- anything else worth preserving and revisiting
-
-The current notes happen to cluster around four threads:
-
-| Theme | What it covers |
+| 主题 | 内容 |
 | --- | --- |
-| Agent Runtime | How to model `thread / turn / item`, approvals, event streams, and runtime boundaries |
-| AI Engineering | What changes when models write code, and what still remains fundamentally hard |
-| Formalism | How to constrain `agent` behavior with protocol, capability, and invariants |
-| Solo | Product and architecture notes for a human-in-the-loop AI workspace |
+| Agent Runtime | `thread / turn / item`、审批、事件流、运行时边界 |
+| AI Engineering | 模型写代码之后，什么变了，什么依然难 |
+| Formalism | 如何用协议、能力边界和不变量约束 `agent` |
+| Solo | 面向 human-in-the-loop 的 AI 工作台相关判断 |
 
-## Current Entry Points
+## 当前入口
 
-If you want the fastest path into the repository as it exists today, start here:
+如果你想快速进入这个仓库当前的内容，建议从这里开始：
 
 1. `agent-interaction-formalism.md`
-   For the protocol-oriented view: `state machine + bounded effects + invariants`
+   看 `state machine + bounded effects + invariants` 这条线
 2. `solo-runtime-boundary.md`
-   For the boundary between Solo's own runtime and any provider-specific adapter
+   看 Solo 自己的 runtime 和 provider adapter 的边界
 3. `solo-phase-1-runtime-todo.md`
-   For the concrete migration path from chat-shaped state to runtime-shaped state
+   看如何从 chat-shaped state 迁移到 runtime-shaped state
 4. `openai-codex-harness-solo-notes.md`
-   For notes connecting Codex's App Server model to Solo's architecture direction
+   看 Codex App Server 方向和 Solo 架构的连接点
 
-## Current Notes
+## 当前笔记
 
 ### `agent-interaction-formalism.md`
 
-Why software architecture should constrain agents with an executable protocol instead of relying on free-form prompting.
+讨论为什么软件架构应该用可执行协议约束 agent，而不是依赖自由文本提示。
 
-Topics:
+涉及：
 
 - `protocol + capability + invariant`
-- why natural language should stop at the `intent layer`
-- why `LLM` is not a silver bullet, but an `accidental-complexity compressor`
+- 为什么自然语言应该停在 `intent layer`
+- 为什么 `LLM` 不是银弹，而更像 `accidental-complexity compressor`
 
 ### `solo-runtime-boundary.md`
 
-A short boundary document about what Solo should own as runtime semantics, and what should remain just an adapter concern.
+一篇短的边界文档，讨论 Solo 应该自己拥有哪部分 runtime 语义，哪部分只该是 adapter 关心的事。
 
-Topics:
+涉及：
 
-- why `codex_cli` can be an access layer but not Solo's long-term runtime
-- why UI should read Solo projections, not provider-native state
+- 为什么 `codex_cli` 可以是 access layer，但不该是 Solo 的长期 runtime
+- 为什么 UI 应该读 Solo projection，而不是 provider 原生状态
 
 ### `solo-phase-1-runtime-todo.md`
 
-A concrete implementation plan for introducing a minimal runtime model without prematurely rewriting the product surface.
+一份具体实现计划，目标是在不提前重写产品表层的前提下，引入最小可用 runtime 模型。
 
-Topics:
+涉及：
 
 - `TurnRecord`
 - `TurnItem`
-- item-level approval state
-- dual-write migration strategy
+- item 级审批状态
+- dual-write 迁移策略
 
 ### `openai-codex-harness-solo-notes.md`
 
-Notes extracted from OpenAI's Codex writing and implementation direction, with emphasis on reusable runtime structure rather than UI imitation.
+围绕 OpenAI Codex 写作和实现方向整理的笔记，重点是 runtime 结构，而不是 UI 模仿。
 
-Topics:
+涉及：
 
 - `Thread -> Turn -> Item`
 - event streams
 - approval as protocol
-- separation between live runtime state and persisted history
+- live runtime state 和 persisted history 的分层
 
-These are current entry points, not the long-term boundary of the repository.
+这些只是当前入口，不是这个仓库未来的边界。
 
-## Working Style
+## 写作风格
 
-These notes are intentionally:
+这些笔记会尽量保持：
 
-- concise
-- architectural
-- biased toward reusable engineering judgments
-- written mostly in Chinese, with technical terms kept in English where that is clearer
+- 简洁
+- 结构化
+- 偏架构判断
+- 偏可复用工程结论
+- 以中文为主，必要时保留英文技术术语
 
-They do not need to be polished essays.  
-They do need to stay worth rereading.
+它们不一定是精修文章。  
+但应该值得以后回来再看。
 
 ## License
 
-This repository is licensed under Apache 2.0. See [`LICENSE`](./LICENSE).
+本仓库使用 Apache 2.0 许可证，见 [`LICENSE`](./LICENSE)。
