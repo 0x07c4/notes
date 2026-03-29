@@ -1,15 +1,30 @@
 # Notes
 
-> Working notes on AI engineering, agent runtimes, and the architecture direction behind `Solo`.
+> A long-running notebook for ideas worth keeping.
 
-This repository collects a small set of opinionated notes about building software in the LLM era.
+This repository is the home for ongoing thinking.
 
-It is not a general knowledge base.  
-It is a focused record of architectural judgments, runtime boundaries, protocol ideas, and design constraints that are likely to matter again.
+Some notes will be about AI engineering, agent runtimes, software architecture, and `Solo`.  
+Some will be about other things entirely.
+
+The point of this repo is not to freeze a topic.  
+The point is to keep thoughts that are still useful after the conversation is over.
 
 ## What This Repo Is About
 
-The current notes cluster around four threads:
+This is not just a snapshot of the current files.
+
+It is intended to become a durable thinking repository:
+
+- architecture notes
+- product judgments
+- engineering research
+- runtime and protocol ideas
+- design constraints
+- conceptual models
+- anything else worth preserving and revisiting
+
+The current notes happen to cluster around four threads:
 
 | Theme | What it covers |
 | --- | --- |
@@ -18,9 +33,9 @@ The current notes cluster around four threads:
 | Formalism | How to constrain `agent` behavior with protocol, capability, and invariants |
 | Solo | Product and architecture notes for a human-in-the-loop AI workspace |
 
-## Reading Map
+## Current Entry Points
 
-If you want the fastest path through the repository, start here:
+If you want the fastest path into the repository as it exists today, start here:
 
 1. `agent-interaction-formalism.md`
    For the protocol-oriented view: `state machine + bounded effects + invariants`
@@ -74,6 +89,8 @@ Topics:
 - approval as protocol
 - separation between live runtime state and persisted history
 
+These are current entry points, not the long-term boundary of the repository.
+
 ## Working Style
 
 These notes are intentionally:
@@ -83,8 +100,8 @@ These notes are intentionally:
 - biased toward reusable engineering judgments
 - written mostly in Chinese, with technical terms kept in English where that is clearer
 
-They are not meant to be polished essays.  
-They are meant to be useful.
+They do not need to be polished essays.  
+They do need to stay worth rereading.
 
 ## License
 
