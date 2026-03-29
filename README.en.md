@@ -6,34 +6,70 @@
 
 <p align="center">
   <img alt="Language" src="https://img.shields.io/badge/language-Chinese%20%2F%20English-111827?style=flat-square">
-  <img alt="Type" src="https://img.shields.io/badge/type-long--running%20notebook-0f766e?style=flat-square">
-  <img alt="Focus" src="https://img.shields.io/badge/focus-architecture%20%7C%20AI%20engineering%20%7C%20Solo-7c3aed?style=flat-square">
+  <img alt="Type" src="https://img.shields.io/badge/type-knowledge%20entry%20%2B%20long--running%20notebook-0f766e?style=flat-square">
+  <img alt="Focus" src="https://img.shields.io/badge/focus-personal%20thinking%20%7C%20architecture%20%7C%20Solo-7c3aed?style=flat-square">
 </p>
 
 <p align="center">
-  A long-running notebook for ideas worth keeping.
+  A long-running entry point for human and AI retrieval of personal thinking.
 </p>
+
+## Entry Notes
+
+This repository is not just a place to store notes. It is also meant to work as a knowledge entry.
+
+Over time it should do two jobs well:
+
+- give humans a clear place to start and navigate
+- give AI systems a stable place to retrieve, locate, and connect personal thinking
+
+So the repository is optimized less for display, and more for:
+
+- topic indexing
+- file-level entry points
+- retrieval hints
+- stable naming
+- long-term extensibility
 
 ## Repository Snapshot
 
-This repository is not a folder for a single topic, and it is not one-off project documentation.
-
-It is closer to a notebook that keeps growing:
-
-- capturing ideas
-- distilling judgments
-- organizing structured questions
-- keeping things worth revisiting later
-
-The point is not to freeze the repository around its current files.  
-The point is to keep thoughts that remain useful after the conversation is over.
-
 | Dimension | Description |
 | --- | --- |
-| Positioning | A long-running thinking repository |
+| Positioning | A knowledge entry for personal thinking |
 | Format | Notes, research fragments, architectural judgments, conceptual models |
+| Navigation Layer | `README` for entry, `INDEX.md` for topic indexing |
 | Current Focus | AI engineering, agent runtime, formalism, `Solo` |
 | Long-Term Scope | Open-ended, as long as the content is worth revisiting |
+
+## How To Use This Repository
+
+If you are entering the repository for the first time:
+
+1. start with this `README`
+2. then read [INDEX.en.md](./INDEX.en.md)
+3. then drill down by topic or file
+
+If you are here to retrieve a specific idea:
+
+- start from the topic map
+- then use filenames and keywords
+- then open the specific note
+
+If this repository is later connected to an AI retrieval flow, the preferred top-level entry should be:
+
+- `README.md` / `README.en.md`
+- `INDEX.md` / `INDEX.en.md`
+- topic files
+
+## Retrieval Hints
+
+To make later retrieval more stable, this repository should try to preserve:
+
+- one clear theme per file where possible
+- filenames that directly reflect the topic
+- titles that state the judgment or question clearly
+- explicit links across important notes
+- root-level index files as stable entry points
 
 ## Current Themes
 
@@ -48,7 +84,9 @@ The current notes happen to cluster around four threads:
 
 These are just the current clusters, not the long-term boundary of the repository.
 
-## Where To Start
+## Topic Index
+
+For a fuller topic map, see [INDEX.en.md](./INDEX.en.md).
 
 If you want the fastest path into the repository as it exists today, start here:
 
@@ -63,12 +101,13 @@ If you want the fastest path into the repository as it exists today, start here:
 
 ## Current Entry Files
 
-| File | Why it matters |
+| File | Why it matters | Keywords |
 | --- | --- |
-| [agent-interaction-formalism.md](./agent-interaction-formalism.md) | Constraining `agent` interaction with protocol, capabilities, and invariants |
-| [solo-runtime-boundary.md](./solo-runtime-boundary.md) | Separating Solo runtime semantics from provider integration concerns |
-| [solo-phase-1-runtime-todo.md](./solo-phase-1-runtime-todo.md) | A minimal implementation path for runtime refactoring |
-| [openai-codex-harness-solo-notes.md](./openai-codex-harness-solo-notes.md) | Extracting reusable runtime lessons from Codex for Solo |
+| [INDEX.en.md](./INDEX.en.md) | The current knowledge map and topic entry layer | index, map, topics, retrieval |
+| [agent-interaction-formalism.md](./agent-interaction-formalism.md) | Constraining `agent` interaction with protocol, capabilities, and invariants | protocol, capability, invariant, formalism |
+| [solo-runtime-boundary.md](./solo-runtime-boundary.md) | Separating Solo runtime semantics from provider integration concerns | runtime boundary, adapter, projection |
+| [solo-phase-1-runtime-todo.md](./solo-phase-1-runtime-todo.md) | A minimal implementation path for runtime refactoring | turn, item, approval, migration |
+| [openai-codex-harness-solo-notes.md](./openai-codex-harness-solo-notes.md) | Extracting reusable runtime lessons from Codex for Solo | Codex, App Server, thread, turn, item |
 
 ## Writing Style
 
