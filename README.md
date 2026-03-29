@@ -2,6 +2,24 @@
 
 > A long-running notebook for ideas worth keeping.
 
+> 一个长期生长的思考仓库，用来保存值得反复回看的判断、问题和结构。
+
+## 中文介绍
+
+这个仓库不是某个单一主题的资料夹，也不是一次性项目文档。
+
+它更像一个长期笔记本：
+
+- 记录思考
+- 沉淀判断
+- 收纳结构化问题
+- 保留以后还会回来看的东西
+
+这里会有 AI engineering、agent runtime、软件架构、产品边界、`Solo` 相关内容。  
+以后也会有别的主题。
+
+重点不是“现在有哪些文章”，而是把未来持续产生的思考，放进一个能积累、能回看、能继续展开的地方。
+
 This repository is the home for ongoing thinking.
 
 Some notes will be about AI engineering, agent runtimes, software architecture, and `Solo`.  
