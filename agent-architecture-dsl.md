@@ -355,6 +355,7 @@ Thread ::= Turn*
 
 ```txt
 Turn ::= {
+  kind,
   input,
   items,
   state
@@ -364,8 +365,18 @@ Turn ::= {
 这里最关键的不是字段多少，而是：
 
 - 系统终于有了“一轮”的真对象
+- 系统终于能区分“这是查询事务”还是“这是编辑事务”
 
 没有 `Turn`，你就只能在 message 流里猜“这一轮到底是什么”。
+
+其中最小种类可以先只保留两个：
+
+```txt
+TurnKind ::= Query | Edit
+```
+
+- `Query` 表示只读、绑定知识快照、追求结果可复现的问答事务
+- `Edit` 表示会经过 proposal / approval / apply 的修改事务
 
 #### 4. `Item`
 
@@ -374,13 +385,28 @@ Turn ::= {
 最小种类：
 
 ```txt
-Item ::= Message | Plan | Preview | Approval | Command | FileChange
+Item ::= Message | Plan | Answer | Preview | Approval | Command | FileChange
 ```
 
 为什么必须有 `Item`：
 
 - 不然 message、proposal、command、diff 就会分散成多套平行历史
 - runtime 没法统一审计和投影
+
+其中对 `Query` turn，`Answer` 不能只是普通文本。
+
+最小可以先约束成：
+
+```txt
+Answer ::= {
+  result,
+  evidence,
+  snapshot_ref,
+  policy_ref
+}
+```
+
+否则你得到的只是“这次刚好这么回答了”，而不是一个可回放、可核对、可复现的结果对象。
 
 #### 5. `Approval`
 
@@ -430,7 +456,7 @@ Resolution ::= Pending | Accept | Reject
 
 有了这 5 个对象以后，最小协议其实可以压得很短。
 
-#### Turn State
+#### Edit Turn State
 
 ```txt
 TurnState ::= Idle | Planning | Previewing | WaitingApproval | Applying | Completed | Failed
@@ -459,19 +485,48 @@ Applying        --runtime.failure-->     Failed
 
 - preview-before-commit
 
+#### Query Turn Pattern
+
+如果用户要的不是“帮我改”，而是“给我一个稳定、可复现的回答”，协议就不该再走 approval / apply 那条路。
+
+最小可以压成：
+
+```txt
+Idle      --user.ask-->         Planning
+Planning  --agent.answer-->     Completed
+Planning  --agent.fail-->       Failed
+```
+
+但它和普通聊天有一个关键差别：
+
+- 这不是自由回答
+- 这是一次只读求值
+
+也就是：
+
+- 输入必须绑定 `snapshot_ref`
+- 判定必须绑定 `policy_ref`
+- 输出必须落成结构化 `Answer`
+
+所以更准确地说，它不是“chat mode with lower temperature”，而是：
+
+- 一个 read-only query protocol
+
 #### Minimal Capability Rules
 
 ```txt
 Agent.read(path)      when path in workspace.scope
-Agent.propose(change) when turn.state in {Planning, Previewing}
-Runtime.apply(diff)   when turn.state == WaitingApproval
-Runtime.exec(cmd)     when turn.state == WaitingApproval and policy.allows(cmd)
+Agent.search(src, q)  when turn.kind == Query and src in allowed_sources
+Agent.propose(change) when turn.kind == Edit and turn.state in {Planning, Previewing}
+Runtime.apply(diff)   when turn.kind == Edit and turn.state == WaitingApproval
+Runtime.exec(cmd)     when turn.kind == Edit and turn.state == WaitingApproval and policy.allows(cmd)
 ```
 
 这一步保证：
 
 - 生成可以先发生
 - 落地必须后发生
+- 查询不会偷偷退化成编辑
 
 #### Minimal Invariants
 
@@ -480,12 +535,16 @@ always apply -> approval_resolved_accept
 always apply -> preview_exists
 always write -> within_scope
 always command -> policy_checked
+always query_turn -> no_write
+always answer -> snapshot_bound
+always answer -> policy_bound
 ```
 
 这一步保证：
 
 - 不会偷提交
 - 不会越权执行
+- 不会把“这次模型随口说的”误当成稳定答案
 
 ### 为什么我说要先定 `model + protocol`
 
@@ -540,7 +599,9 @@ State ::= Idle | Planning | Previewing | WaitingApproval | Applying | Completed 
 
 ```txt
 Action ::= Request
+         | Ask
          | Propose
+         | Answer
          | RequestChange
          | Approve
          | Reject
@@ -558,6 +619,7 @@ Action ::= Request
 
 ```txt
 Effect ::= Read(path)
+         | Search(src, q)
          | Write(diff)
          | Exec(cmd)
          | Network(req)
@@ -583,7 +645,9 @@ transition : State × Action -> State
 
 ```txt
 transition(Idle, Request)              = Planning
+transition(Idle, Ask)                  = Planning
 transition(Planning, Propose)          = Previewing
+transition(Planning, Answer)           = Completed
 transition(Previewing, RequestChange)  = Planning
 transition(Previewing, Approve)        = WaitingApproval
 transition(Previewing, Reject)         = Completed
@@ -614,11 +678,18 @@ can : Role × Effect × State × Context -> Bool
 can(Agent, Read(path), state, ctx) =
   path in ctx.workspace_scope
 
+can(Agent, Search(src, q), state, ctx) =
+  ctx.turn_kind == Query and src in ctx.allowed_sources
+
 can(Runtime, Write(diff), state, ctx) =
-  state == WaitingApproval and ctx.approval_resolved_accept
+  ctx.turn_kind == Edit and
+  state == WaitingApproval and
+  ctx.approval_resolved_accept
 
 can(Runtime, Exec(cmd), state, ctx) =
-  state == WaitingApproval and policy_allows(cmd, ctx.policy)
+  ctx.turn_kind == Edit and
+  state == WaitingApproval and
+  policy_allows(cmd, ctx.policy_ref)
 ```
 
 这一步决定的不是“系统下一步怎么流”，而是：
@@ -647,6 +718,9 @@ always apply -> approval_resolved_accept
 always write -> within_scope
 always exec  -> policy_checked
 always completed_apply -> preview_existed_before
+always query_turn -> no_write
+always answer -> snapshot_bound
+always answer -> policy_bound
 ```
 
 这一步解决的是：
@@ -686,9 +760,12 @@ always completed_apply -> preview_existed_before
 
 ```txt
 Context ::= {
+  turn_kind,
   workspace_scope,
   approval_resolved_accept,
-  policy,
+  policy_ref,
+  snapshot_ref,
+  allowed_sources,
   existing_preview,
   trace
 }
@@ -698,6 +775,13 @@ Context ::= {
 
 - 语义内核不需要一上来就有复杂对象图
 - 它只需要最小足够的上下文来做判定
+
+对于 `Query` turn，这里最重要的是两件事：
+
+- 当前回答到底绑定的是哪一个知识快照
+- 当前回答到底服从的是哪一套判定规则
+
+不把这两件事显式化，就没有真正的“可复现问答”，只有“看起来比较稳定的聊天”。
 
 ### 最小 Trace 长什么样
 
